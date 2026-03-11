@@ -96,6 +96,24 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
+def unifiedImplementationDeps = rootProject.ext.has('unifiedImplementationDeps')
+    ? rootProject.ext.unifiedImplementationDeps
+    : [
+        jei          : "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}",
+    ]
+
+def unifiedCompatCompileOnlyDeps = rootProject.ext.has('unifiedCompatCompileOnlyDeps')
+    ? rootProject.ext.unifiedCompatCompileOnlyDeps
+    : [
+        ftbChunks    : "dev.ftb.mods:ftb-chunks-neoforge:2101.1.1",
+        ftbTeams     : "dev.ftb.mods:ftb-teams-neoforge:2101.1.0",
+        ftbLibrary   : "dev.ftb.mods:ftb-library-neoforge:2101.1.3",
+        journeyMap   : "maven.modrinth:journeymap:1.21.1-6.0.0-beta.55+neoforge",
+        journeyMapApi: "info.journeymap:journeymap-api-neoforge:2.0.0-1.21.1-SNAPSHOT",
+        xaeroLib     : "xaero.lib:xaerolib-neoforge-1.21:1.0.42",
+        xaeroWorldMap: "curse.maven:xaeros-world-map-317780:7401095"
+    ]
+
 repositories {
     maven { url = "https://maven.createmod.net" } // Ponder, Flywheel
     maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate
@@ -134,7 +152,7 @@ dependencies {
 
     //compileOnly("mezz.jei:jei-$minecraft_version-common-api:$jei_version")
     //compileOnly("mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version")
-    implementation("mezz.jei:jei-$minecraft_version-neoforge:$jei_version")
+    implementation(unifiedImplementationDeps.jei)
 
     compileOnly("top.theillusivec4.curios:curios-neoforge:$curios_version+$minecraft_version:api")
     runtimeOnly("top.theillusivec4.curios:curios-neoforge:$curios_version+$minecraft_version")
@@ -147,18 +165,18 @@ dependencies {
         runtimeOnly("cc.tweaked:cc-tweaked-$minecraft_version-forge:$cc_tweaked_version")
     }
 
-    runtimeOnly("dev.architectury:architectury-neoforge:13d.0.8")
-    implementation("dev.ftb.mods:ftb-chunks-neoforge:2101.1.1")
-    implementation("dev.ftb.mods:ftb-teams-neoforge:2101.1.0")
-    implementation("dev.ftb.mods:ftb-library-neoforge:2101.1.3")
+    runtimeOnly("dev.architectury:architectury-neoforge:13.0.8")
+    compileOnly(unifiedCompatCompileOnlyDeps.ftbChunks)
+    compileOnly(unifiedCompatCompileOnlyDeps.ftbTeams)
+    compileOnly(unifiedCompatCompileOnlyDeps.ftbLibrary)
 
-    implementation("maven.modrinth:journeymap:1.21.1-6.0.0-beta.46+neoforge")
-    implementation("info.journeymap:journeymap-api-neoforge:2.0.0-1.21.1-SNAPSHOT") {
+    compileOnly(unifiedCompatCompileOnlyDeps.journeyMap)
+    compileOnly(unifiedCompatCompileOnlyDeps.journeyMapApi) {
         exclude(group: "curse.maven") // Pulls in a old version of journey map which is for forge
     }
 
-    implementation("xaero.lib:xaerolib-neoforge-1.21:1.0.42")
-    implementation("curse.maven:xaeros-world-map-317780:7401095")
+    compileOnly(unifiedCompatCompileOnlyDeps.xaeroLib)
+    compileOnly(unifiedCompatCompileOnlyDeps.xaeroWorldMap)
 }
 
 sourceSets.main {
